@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>English Work Tracker</title>
+<style>
+:root{--bg:#07111f;--card:#0e1c30;--card2:#132641;--text:#f7f9ff;--muted:#94a7c4;--blue:#6d8cff;--mint:#42d7b1;--gold:#ffc857}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,"Segoe UI",Arial;background:radial-gradient(circle at 50% -10%,#18365f 0,#091525 35%,#06101d 72%);color:var(--text)}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(120deg,transparent 30%,#6d8cff0b 50%,transparent 70%);animation:glow 9s linear infinite}
+@keyframes glow{from{transform:translateX(-70%)}to{transform:translateX(70%)}}
+main,.wrap{max-width:620px;margin:auto;padding:18px 14px 90px}.top,header{background:linear-gradient(135deg,#142b4bdd,#0b182bdd);color:white;border:1px solid #ffffff14;border-radius:25px;padding:21px;box-shadow:0 18px 50px #0005;animation:rise .55s ease}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+h1{font-size:25px;margin:0 0 6px}.muted,.small{color:var(--muted)!important;font-size:12px}.progress{height:11px;background:#ffffff12;border-radius:99px;overflow:hidden;margin:14px 0 8px}.bar,#bar{height:100%;background:linear-gradient(90deg,var(--blue),var(--mint));border-radius:99px;box-shadow:0 0 22px #42d7b177;transition:width .65s cubic-bezier(.2,.8,.2,1)}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:11px 0}.stat,.card{background:linear-gradient(145deg,#0f1f35,#0a1728);border:1px solid #ffffff0e;border-radius:19px;box-shadow:0 10px 30px #0003}.stat{padding:13px;text-align:center}.num{font-size:21px;font-weight:900}.label{font-size:11px;color:var(--muted)}
+.card{padding:17px;margin:12px 0;animation:rise .35s ease}.day{display:flex;justify-content:space-between;align-items:center}.badge{background:#6d8cff20;color:#becaff;border:1px solid #6d8cff44;border-radius:999px;padding:6px 10px;font-size:12px}
+h2{font-size:21px;margin:9px 0}h3{font-size:14px;margin:19px 0 9px;color:#dce6f7}.row,.sent{background:#ffffff07;border:1px solid #ffffff09;border-radius:14px;padding:11px;margin:8px 0;transition:.2s}.row{display:flex;gap:9px;align-items:center}.row:has(input:checked),.sent:has(input:checked){background:#42d7b112;border-color:#42d7b144;transform:scale(.99)}
+.check,input[type=checkbox]{width:22px;height:22px;accent-color:var(--mint)}.sent{direction:ltr;text-align:left;color:#f8faff}.ar{color:var(--muted);font-size:12px;margin-top:4px}
+button{border:0;border-radius:13px;padding:12px 14px;background:#152943;color:white;font-weight:800;transition:.18s}button:active{transform:scale(.97)}button.secondary{background:#ffffff0b;color:white}.nav{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);width:min(592px,calc(100% - 26px));display:flex;gap:8px;background:#081523e8;backdrop-filter:blur(16px);padding:9px;border:1px solid #ffffff12;border-radius:19px;z-index:20}.nav button{flex:1}.nav button:last-child{background:linear-gradient(135deg,#6d8cff,#5574e7)}
+select,.note,textarea{width:100%;padding:12px;border:1px solid #ffffff13;border-radius:13px;background:#091727;color:white;font-family:inherit}.note,textarea{min-height:75px}
+a{color:#9db0ff;text-decoration:none;font-weight:800}
+</style>
+<style>
+:root{--duo:#58cc02;--duo2:#46a302;--wrong:#ff4b4b;--sky:#1cb0f6}
+.lesson-path{display:flex;justify-content:center;gap:9px;flex-wrap:wrap;margin:14px 0}
+.node{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:#132641;border:3px solid #263d5e;font-weight:900}
+.node.active{background:var(--duo);border-color:#8ee85b;box-shadow:0 0 0 6px #58cc0220,0 8px 20px #0004}
+.quizbtn{width:100%;margin-top:12px;background:var(--duo);box-shadow:0 5px 0 var(--duo2);font-size:15px}.quizbtn:active{transform:translateY(3px);box-shadow:0 2px 0 var(--duo2)}
+.modal{position:fixed;inset:0;background:#06101df2;z-index:50;display:none;align-items:flex-end;justify-content:center}.modal.show{display:flex}
+.quiz{width:min(620px,100%);min-height:78vh;background:#0d1a2c;border-radius:26px 26px 0 0;padding:18px;animation:slide .28s ease}
+@keyframes slide{from{transform:translateY(35px);opacity:0}to{transform:none;opacity:1}}
+.quiztop{display:flex;gap:12px;align-items:center}.qbar{height:12px;flex:1;background:#ffffff12;border-radius:99px;overflow:hidden}.qbar div{height:100%;background:var(--duo);transition:.3s}.hearts{font-weight:900;color:#ff6b6b}
+.qprompt{font-size:22px;font-weight:900;margin:30px 0 18px;line-height:1.35}.choice{width:100%;text-align:left;direction:ltr;margin:8px 0;background:#12233a;border:2px solid #29415f;box-shadow:0 3px 0 #07111f}.choice.selected{border-color:var(--sky);background:#1cb0f615}.feedback{margin-top:15px;padding:13px;border-radius:14px;font-weight:800;display:none}.feedback.ok{display:block;background:#58cc0220;color:#8ee85b}.feedback.bad{display:block;background:#ff4b4b20;color:#ff8585}
+.quizactions{display:flex;gap:8px;margin-top:18px}.quizactions button{flex:1}.checkbtn{background:var(--duo);box-shadow:0 4px 0 var(--duo2)}.closebtn{background:#ffffff10}
+</style>
+</head><body><main>
+<header><h1>QA English Quest 🚀</h1><div class="sub">30 يوم • QA / IT / Software Testing</div><div class="progress"><div id="bar"></div></div><div id="summary" class="sub" style="margin-top:7px"></div></header>
+<div class="stats"><div class="stat"><div id="done" class="n">0</div><div class="l">أيام مكتملة</div></div><div class="stat"><div id="minutes" class="n">0</div><div class="l">دقيقة</div></div><div class="stat"><div id="percent" class="n">0%</div><div class="l">الإنجاز</div></div></div>
+<div class="nav"><button onclick="prev()">السابق</button><button onclick="next()">التالي</button></div>
+<div id="app"></div>
+</main><script>
+const DAYS=[{"topic": "Introduction & role", "sentences": ["I work as a QA specialist.", "I’m responsible for testing the application.", "I usually start my day by checking my tasks.", "I work closely with developers and the BA team.", "I’m currently working on a new feature."]}, {"topic": "Daily work", "sentences": ["My main responsibility is software testing.", "I test new features before they are released.", "I check whether the requirements are clear.", "I report any issues I find.", "I follow up on bugs until they are fixed."]}, {"topic": "Stand-up update", "sentences": ["Yesterday, I worked on the login feature.", "Today, I’m going to test the new release.", "I’m currently working on the assigned test cases.", "I don’t have any blockers at the moment.", "I’m still waiting for access to the test environment."]}, {"topic": "Requirements", "sentences": ["Could you clarify this requirement?", "What is the expected behavior?", "Could you give me an example?", "Is this scenario included in the requirement?", "What should happen in this case?"]}, {"topic": "Bug reporting", "sentences": ["I found a bug.", "The issue occurs when I submit the form.", "The actual result is different from the expected result.", "I can reproduce the issue.", "The issue happens every time."]}, {"topic": "Developer communication", "sentences": ["Could you take a look at this issue?", "I think the problem is related to the backend.", "Could you check the API response?", "I’ll share the details with you.", "Let me know if you need more information."]}, {"topic": "Week 1 review", "sentences": ["I can introduce myself clearly.", "I can explain my daily tasks.", "I can give a short stand-up update.", "I can ask for clarification.", "I can describe a bug clearly."]}, {"topic": "Test cases", "sentences": ["The precondition is that the user is logged in.", "The first step is to open the page.", "The expected result is that the page opens successfully.", "The actual result is different.", "I’ll update the test case if the requirement changes."]}, {"topic": "Test execution", "sentences": ["I executed the test case successfully.", "The test passed as expected.", "The test failed because of an error.", "I found an issue during execution.", "I’ll attach the evidence to the ticket."]}, {"topic": "Pass / Fail", "sentences": ["The test passed because the result was correct.", "The test failed because the button was not displayed.", "All the main scenarios passed.", "A few negative scenarios failed.", "I need to investigate the failed cases."]}, {"topic": "Retesting", "sentences": ["I retested the issue after the fix.", "The bug is fixed now.", "I can no longer reproduce the issue.", "The issue is still happening.", "Could you deploy the latest fix?"]}, {"topic": "Regression testing", "sentences": ["We need to run regression testing.", "I’ll check the main existing features.", "Regression testing is important before release.", "I’ll focus on the affected areas.", "I’ll share the regression results afterward."]}, {"topic": "Severity & Priority", "sentences": ["This is a high-severity issue.", "I think this should be high priority.", "The issue affects the main user flow.", "This bug can block the release.", "We should discuss the priority with the team."]}, {"topic": "Week 2 review", "sentences": ["I can explain a test case.", "I can report test results.", "I can explain a retest.", "I can discuss regression testing.", "I can explain severity and priority."]}, {"topic": "Meetings", "sentences": ["Can I add something?", "From my side, everything looks good.", "Let me explain the issue briefly.", "Could you repeat that, please?", "I’d like to clarify one point."]}, {"topic": "Giving opinions", "sentences": ["I think we should fix this before release.", "In my opinion, this needs more testing.", "I suggest testing this scenario again.", "From a QA perspective, this is important.", "I have one concern about this change."]}, {"topic": "Agreeing & disagreeing", "sentences": ["I agree with your point.", "I see your point, but I have a concern.", "That makes sense to me.", "I’m not sure I agree with that approach.", "Could we consider another option?"]}, {"topic": "Explaining problems", "sentences": ["The main issue is related to the test environment.", "This affects the user login process.", "We need to investigate the root cause.", "I’ll check it and get back to you.", "We can discuss the next step after that."]}, {"topic": "Blockers", "sentences": ["I’m currently blocked by a missing permission.", "I need access to the test environment.", "I’m waiting for the latest build.", "This is preventing me from completing the test.", "I’ll continue once the blocker is resolved."]}, {"topic": "Status updates", "sentences": ["So far, we have completed the main test cases.", "We still have a few issues to verify.", "Testing is progressing as planned.", "We are waiting for the developer’s fix.", "I’ll provide another update later today."]}, {"topic": "Week 3 review", "sentences": ["I can participate in a meeting.", "I can give my opinion clearly.", "I can disagree politely.", "I can explain a blocker.", "I can give a concise status update."]}, {"topic": "Jira", "sentences": ["I created a ticket in Jira.", "I updated the ticket with the latest evidence.", "I moved the ticket to testing.", "Could you assign this ticket to the right developer?", "I’ll add the steps to reproduce."]}, {"topic": "API testing", "sentences": ["I sent a request to the API.", "The response code is 200.", "The response contains the expected data.", "The API returned an error.", "I’ll check the request and response details."]}, {"topic": "Test environment", "sentences": ["The issue only happens in the test environment.", "The test environment is currently unavailable.", "Could you restart the service?", "The latest build has not been deployed yet.", "I’ll test again after deployment."]}, {"topic": "Release readiness", "sentences": ["From QA’s side, we are ready for release.", "We still have a few issues to fix.", "The critical scenarios have passed.", "I don’t see any major blockers.", "I recommend fixing this issue before release."]}, {"topic": "Test reports", "sentences": ["We executed fifty test cases.", "Forty-five test cases passed.", "Five test cases failed.", "I’ll include the results in the test report.", "The remaining failures are under investigation."]}, {"topic": "Difficult situations", "sentences": ["Let me verify that first.", "I’ll get back to you with an update.", "I’m not sure about that yet.", "Let me check the requirement before I confirm.", "I’ll investigate and share the result."]}, {"topic": "Full QA simulation", "sentences": ["Before we start, let me give you a quick update.", "The main issue we found is this.", "The next step is to retest the fix.", "I’ll share the results after the meeting.", "Does anyone have any questions?"]}, {"topic": "Speaking test", "sentences": ["I can speak without reading my notes.", "I can explain my role and responsibilities.", "I can describe a bug step by step.", "I can answer common QA questions.", "I can keep speaking even if I forget a word."]}, {"topic": "Final assessment", "sentences": ["I can introduce myself confidently.", "I can explain my daily tasks.", "I can give a clear status update.", "I can describe a bug without reading.", "I can participate in a QA meeting in English."]}];
+let day=+(localStorage.getItem("ewt-day")||1); let state=JSON.parse(localStorage.getItem("ewt-state")||"{}");
+function S(){if(!state[day])state[day]={tasks:[0,0,0,0],sent:[0,0,0,0,0],done:false,confidence:"",understanding:"",speaking:"",notes:""};return state[day]}
+function buzz(){if(navigator.vibrate)navigator.vibrate(25)}
+function save(){localStorage.setItem("ewt-day",day);localStorage.setItem("ewt-state",JSON.stringify(state));stats()}
+function setTask(i,v){S().tasks[i]=v?1:0;save()} function setSent(i,v){S().sent[i]=v?1:0;save()}
+function setDone(v){S().done=v;save()} function setV(k,v){S()[k]=v;save()}
+function options(v,label){return `<option value="">${label}</option>`+[1,2,3,4,5].map(x=>`<option ${v==x?"selected":""}>${x}</option>`).join("")}
+function render(){
+ let d=DAYS[day-1],s=S();
+ document.getElementById("app").innerHTML=`<section class="card"><div class="daytop"><span class="badge">اليوم ${day} من 30</span><span class="help">${d.topic}</span></div><h2>${d.topic}</h2>
+ <h3>خطة الساعة</h3>
+ ${["🎧 Listening — 15 دقيقة","🗣️ Shadowing — 15 دقيقة","💬 Speaking — 15 دقيقة","📝 الجمل والمراجعة — 15 دقيقة"].map((x,i)=>`<div class="task"><input type="checkbox" ${s.tasks[i]?"checked":""} onchange="setTask(${i},this.checked)"><span>${x}</span></div>`).join("")}
+ <h3>🎧 الاستماع</h3><div class="help">في يوتيوب ابحث عن <b>BBC Learning English English at Work</b>، ولأيام QA التقنية ابحث عن <b>software testing QA English</b>. اسمع أول مرة للفهم، ثم أعد المقطع وكرر الجمل بصوت مرتفع.</div>
+ <h3>📝 5 جمل اليوم</h3>
+ ${d.sentences.map((x,i)=>`<div class="sentence"><input type="checkbox" ${s.sent[i]?"checked":""} onchange="setSent(${i},this.checked)">${x}</div>`).join("")}
+ <h3>📊 تقييم اليوم</h3>
+ <select onchange="setV('confidence',this.value)">${options(s.confidence,"الثقة من 5")}</select><br><br>
+ <select onchange="setV('understanding',this.value)">${options(s.understanding,"الفهم من 5")}</select><br><br>
+ <select onchange="setV('speaking',this.value)">${options(s.speaking,"التحدث من 5")}</select>
+ <h3>🗒️ ملاحظاتي</h3><textarea onchange="setV('notes',this.value)" placeholder="اكتب الكلمات أو المواقف التي تحتاج تراجعها...">${s.notes||""}</textarea>
+ <div class="task" style="margin-top:15px"><input type="checkbox" ${s.done?"checked":""} onchange="setDone(this.checked)"><b>أنجزت اليوم كاملًا ✅</b></div></section>`;stats()
+}
+function stats(){let n=Object.values(state).filter(x=>x.done).length,p=Math.round(n/30*100);done.textContent=n;minutes.textContent=n*60;percent.textContent=p+"%";summary.textContent=n+" / 30 يوم مكتمل";bar.style.width=p+"%"}
+function prev(){day=Math.max(1,day-1);save();render()}function next(){day=Math.min(30,day+1);save();render()}
+
+let qi=0,qscore=0,qhearts=3,qselected=null,qset=[];
+function makeQuiz(){
+ const s=DAYS[day-1].sentences;
+ qset=s.map((correct,i)=>{
+   let words=correct.split(" "), cut=Math.max(1,Math.floor(words.length*.55));
+   let stem=words.slice(0,cut).join(" ")+" ____";
+   let answer=words.slice(cut).join(" ");
+   let pool=[];
+   DAYS.forEach(d=>d.sentences.forEach(x=>{let w=x.split(" ");let c=Math.max(1,Math.floor(w.length*.55));let tail=w.slice(c).join(" ");if(tail&&tail!==answer)pool.push(tail)}));
+   pool=pool.sort(()=>Math.random()-.5).slice(0,3);
+   let choices=[answer,...pool].sort(()=>Math.random()-.5);
+   return {stem,answer,choices};
+ });
+}
+function startQuiz(){qi=0;qscore=0;qhearts=3;qselected=null;makeQuiz();quizModal.classList.add("show");renderQ()}
+function closeQuiz(){quizModal.classList.remove("show")}
+function renderQ(){
+ let q=qset[qi]; hearts.textContent="❤️".repeat(qhearts)+"🖤".repeat(3-qhearts);qbar.style.width=(qi/qset.length*100)+"%";
+ qbody.innerHTML=`<div class="muted" style="margin-top:20px">اختر التكملة الصحيحة للجملة</div><div class="qprompt" dir="ltr">${q.stem}</div>
+ ${q.choices.map((c,i)=>`<button class="choice" onclick="chooseQ(${i},this)">${c}</button>`).join("")}
+ <div id="feed" class="feedback"></div><div class="quizactions"><button class="checkbtn" onclick="checkQ()">تحقق</button></div>`;
+}
+function chooseQ(i,el){qselected=i;document.querySelectorAll(".choice").forEach(x=>x.classList.remove("selected"));el.classList.add("selected")}
+function checkQ(){
+ if(qselected===null)return; let q=qset[qi],chosen=q.choices[qselected],f=document.getElementById("feed");
+ if(chosen===q.answer){qscore++;f.className="feedback ok";f.textContent="صحيح! ممتاز 🔥";buzz()}
+ else{qhearts--;f.className="feedback bad";f.textContent="الإجابة الصحيحة: "+q.answer}
+ setTimeout(()=>{qi++;qselected=null;if(qi>=qset.length||qhearts<=0)finishQuiz();else renderQ()},900)
+}
+function finishQuiz(){
+ qbar.style.width="100%";let passed=qscore>=4;
+ qbody.innerHTML=`<div style="text-align:center;padding:45px 5px"><div style="font-size:64px">${passed?"🏆":"💪"}</div><div class="qprompt">${passed?"رهيب! أنهيت التحدي":"محاولة ممتازة، راجع الجمل وجرب مرة ثانية"}</div><div class="num">${qscore} / 5</div><div class="muted">إجابات صحيحة</div><button class="quizbtn" onclick="closeQuiz()" style="margin-top:25px">العودة لدرس اليوم</button></div>`;
+ if(passed){confetti();toast("تحدي اليوم مكتمل! 🎯")}
+}
+
+render();
+</script>
+<div class="modal" id="quizModal"><div class="quiz">
+<div class="quiztop"><button class="closebtn" onclick="closeQuiz()">✕</button><div class="qbar"><div id="qbar"></div></div><div class="hearts" id="hearts">❤️❤️❤️</div></div>
+<div id="qbody"></div>
+</div></div>
+</body></html>
